@@ -3,6 +3,18 @@
 version = 3
 
 [[package]]
+name = "adapter"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "async-trait",
+ "derive-new",
+ "kernel",
+ "shared",
+ "sqlx",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -55,6 +67,14 @@ name = "anyhow"
 version = "1.0.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "86fdf8605db99b54d3cd748a44c6d04df638eb5dafb219b135d0149bd0db01f6"
+
+[[package]]
+name = "api"
+version = "0.1.0"
+dependencies = [
+ "axum",
+ "registry",
+]
 
 [[package]]
 name = "async-trait"
@@ -306,6 +326,17 @@ dependencies = [
  "const-oid",
  "pem-rfc7468",
  "zeroize",
+]
+
+[[package]]
+name = "derive-new"
+version = "0.7.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2cdc8d50f426189eef89dac62fabfa0abb27d5cc008f25bf4156a0203325becc"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -714,6 +745,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "kernel"
+version = "0.1.0"
+dependencies = [
+ "async-trait",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.5.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1050,6 +1088,14 @@ dependencies = [
 ]
 
 [[package]]
+name = "registry"
+version = "0.1.0"
+dependencies = [
+ "adapter",
+ "kernel",
+]
+
+[[package]]
 name = "rsa"
 version = "0.9.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1098,8 +1144,15 @@ checksum = "955d28af4278de8121b7ebeb796b6a45735dc01436d898801014aced2773a3d6"
 name = "rusty-book-manager"
 version = "0.1.0"
 dependencies = [
+ "adapter",
  "anyhow",
+ "api",
+ "async-trait",
  "axum",
+ "derive-new",
+ "kernel",
+ "registry",
+ "shared",
  "sqlx",
  "tokio",
 ]
@@ -1190,6 +1243,13 @@ dependencies = [
  "cfg-if",
  "cpufeatures",
  "digest",
+]
+
+[[package]]
+name = "shared"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
 ]
 
 [[package]]
