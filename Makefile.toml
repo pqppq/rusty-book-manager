@@ -32,7 +32,7 @@ JAEGER_HOST = "localhost"
 JAEGER_PORT = 6831
 
 [tasks.before-build]
-run_task = [{ name = ["compose-up-db", "compose-up-redis"] }]
+run_task = [{ name = ["compose-up-db", "migrate", "compose-up-redis"] }]
 
 [tasks.compose-build-app]
 extend = "set-env-local"
@@ -114,6 +114,13 @@ extend = "set-env-local"
 install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
 command = "sqlx"
 args = ["${@}", "--source", "adapter/migrations"]
+
+[tasks.sqlx-prepare]
+extend = "set-env-local"
+install_crate = { crate_name = "sqlx-cli", binary = "sqlx", test_arg = "--help", version = "0.7.3" }
+command = "cargo"
+args = ["sqlx", "prepare", "--workspace"]
+
 
 [tasks.psql]
 extend = "set-env-local"

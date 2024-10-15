@@ -1,6 +1,8 @@
 use shared::config::DatabaseConfig;
 use sqlx::{postgres::PgConnectOptions, PgPool};
 
+pub mod model;
+
 // DatabaseConfig から PgConnectOptionsに.into()で変換できるようにする
 fn make_pg_connect_options(cfg: &DatabaseConfig) -> PgConnectOptions {
     PgConnectOptions::new()

@@ -22,5 +22,6 @@ impl AppConfig {
             database: std::env::var("DATABASE_NAME")?,
         };
 
-        Ok(Self { database }) }
+        Ok(Self { database })
+    }
 }
