@@ -26,6 +26,18 @@ derive-new = "0.7.0"
 uuid = { version = "1.10.0", features = ["v4", "serde"] }
 serde = { version = "1.0.210", features = ["derive"] }
 thiserror = "1.0.64"
+chrono = { version = "0.4.38", default-features = false, features = ["serde"] }
+secrecy = "0.10.3"
+strum = { version = "0.26.3", features = ["derive"] }
+mockall = "0.13.0"
+bcrypt = "0.15.1"
+itertools = "0.13.0"
+tower = "0.5.1"
+tracing = { version = "0.1.40", features = ["log"] }
+axum-extra = { version = "0.9.4", features = ["typed-header"] }
+tokio-stream = "0.1.16"
+garde = { version = "0.20.0", features = ["derive", "email"] }
+utopia = "0.0.1"
 
 [dependencies]
 adapter = {workspace = true}
@@ -39,3 +51,22 @@ sqlx = {workspace = true}
 tokio = {workspace = true}
 async-trait = {workspace = true}
 derive-new = {workspace = true}
+chrono = {workspace = true}
+secrecy = {workspace = true}
+strum = {workspace = true}
+mockall = {workspace = true}
+bcrypt = {workspace = true}
+itertools = {workspace = true}
+tower = {workspace = true}
+tracing = {workspace = true}
+axum-extra = {workspace = true}
+tokio-stream = {workspace = true}
+garde = {workspace = true}
+utopia = {workspace = true}
+tracing-subscriber = {version = "0.3.18", features = ["env-filter", "json"]}
+opentelemetry = "0.26.0"
+tracing-opentelemetry = "0.27.0"
+opentelemetry-jaeger = { version = "0.22.0", features = ["rt-tokio"] }
+
+[profile.dev.package.sqlx-macros]
+opt-level = 3
