@@ -8,6 +8,11 @@ pub struct DatabaseConfig {
     pub database: String,
 }
 
+pub struct RedisConfig {
+    pub host: String,
+    pub port: u16,
+}
+
 pub struct AppConfig {
     pub database: DatabaseConfig,
 }
