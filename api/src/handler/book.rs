@@ -37,7 +37,7 @@ pub async fn show_book(
 ) -> Result<Json<BookResponse>, AppError> {
     registry
         .book_repository()
-        .find_by_id(book_id)
+        .find_by_id(book_id.into())
         .await
         .and_then(|bc| match bc {
             Some(bc) => Ok(Json(bc.into())),

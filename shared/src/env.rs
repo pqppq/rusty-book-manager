@@ -19,6 +19,6 @@ pub fn which() -> Environment {
 
     match env::var("ENV") {
         Err(_) => default_env,
-        Ok(v) => v.parse().unwrap_or(default_env)
+        Ok(v) => v.parse().unwrap_or(default_env),
     }
 }
