@@ -1,7 +1,9 @@
 use adapter::database::connect_database_with;
 
+use adapter::redis::RedisClient;
 use anyhow::Context;
 use anyhow::Result;
+use api::route::auth;
 use api::route::{book::build_book_routes, health::build_health_check_routes};
 use axum::http::Method;
 use axum::Router;
@@ -11,6 +13,7 @@ use shared::{
     env::{which, Environment},
 };
 use std::net::{Ipv4Addr, SocketAddr};
+use std::sync::Arc;
 use tokio::net::TcpListener;
 use tower_http::cors::{Any, CorsLayer};
 use tower_http::trace::{DefaultMakeSpan, DefaultOnRequest, DefaultOnResponse, TraceLayer};
@@ -50,8 +53,9 @@ fn init_logger() -> Result<()> {
 async fn bootstrap() -> Result<()> {
     let app_config = AppConfig::new()?;
     let pool = connect_database_with(&app_config.database);
+    let redis_client = Arc::new(RedisClient::new(&app_config.redis)?);
 
-    let registry = AppRegistry::new(pool);
+    let registry = AppRegistry::new(pool, redis_client, app_config);
     let cors = CorsLayer::new()
         // allow `GET` and `POST` when accessing the resource
         .allow_methods([Method::GET, Method::POST])
@@ -69,6 +73,7 @@ async fn bootstrap() -> Result<()> {
     let app = Router::new()
         .merge(build_health_check_routes())
         .merge(build_book_routes())
+        .merge(auth::routes())
         .layer(cors)
         .layer(tracing_layer)
         .with_state(registry);
