@@ -3,7 +3,7 @@ use adapter::database::connect_database_with;
 use adapter::redis::RedisClient;
 use anyhow::Context;
 use anyhow::Result;
-use api::route::auth;
+use api::route::{auth, v1};
 use api::route::{book::build_book_routes, health::build_health_check_routes};
 use axum::http::Method;
 use axum::Router;
@@ -71,8 +71,7 @@ async fn bootstrap() -> Result<()> {
         );
 
     let app = Router::new()
-        .merge(build_health_check_routes())
-        .merge(build_book_routes())
+        .merge(v1::routes())
         .merge(auth::routes())
         .layer(cors)
         .layer(tracing_layer)
