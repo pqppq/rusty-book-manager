@@ -1,0 +1,19 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                UPDATE books\n                SET\n                    title = $1,\n                    author = $2,\n                    isbn = $3,\n                    description = $4\n                WHERE book_id = $5\n                AND user_id = $6\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Varchar",
+        "Uuid",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "d75a6aa768e64805c44e0347c2a076aebef1c5e00ea07a4311e4cd43a6a59a52"
+}
