@@ -57,7 +57,7 @@ async fn bootstrap() -> Result<()> {
     let registry = AppRegistry::new(pool, redis_client, app_config);
     let cors = CorsLayer::new()
         // allow `GET` and `POST` when accessing the resource
-        .allow_methods([Method::GET, Method::POST])
+        .allow_methods([Method::GET, Method::POST, Method::PUT, Method::DELETE])
         // allow requests from any origin
         .allow_origin(Any);
     let tracing_layer = TraceLayer::new_for_http()
