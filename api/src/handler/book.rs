@@ -21,7 +21,7 @@ pub async fn register_book(
     user: AuthorizedUser,
     State(registry): State<AppRegistry>,
     Json(req): Json<CreateBookRequest>,
-) -> Result<StatusCode, AppError> {
+) -> AppResult<StatusCode> {
     registry
         .book_repository()
         .create(req.into(), user.id()) // CreateBookRequest -> CreateBook

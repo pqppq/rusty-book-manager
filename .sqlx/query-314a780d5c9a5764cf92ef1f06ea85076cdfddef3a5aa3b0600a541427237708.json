@@ -1,0 +1,15 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n            INSERT INTO returned_checkouts\n            (checkout_id, book_id, user_id, checked_out_at, returned_at)\n            SELECT checkout_id, book_id, user_id, checked_out_at, $1\n            FROM checkouts\n            WHERE checkout_id = $2;\n            ",
+  "describe": {
+    "columns": [],
+    "parameters": {
+      "Left": [
+        "Timestamptz",
+        "Uuid"
+      ]
+    },
+    "nullable": []
+  },
+  "hash": "314a780d5c9a5764cf92ef1f06ea85076cdfddef3a5aa3b0600a541427237708"
+}

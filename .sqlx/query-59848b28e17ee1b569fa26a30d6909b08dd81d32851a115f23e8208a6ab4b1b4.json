@@ -1,0 +1,34 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "\n                    SELECT\n                        b.book_id,\n                        c.checkout_id AS \"checkout_id?: CheckoutId\",\n                        c.user_id AS \"user_id?: UserId\"\n                    FROM books AS b\n                    LEFT OUTER JOIN checkouts AS c USING(book_id)\n                    WHERE book_id = $1;\n                ",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "book_id",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 1,
+        "name": "checkout_id?: CheckoutId",
+        "type_info": "Uuid"
+      },
+      {
+        "ordinal": 2,
+        "name": "user_id?: UserId",
+        "type_info": "Uuid"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Uuid"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false
+    ]
+  },
+  "hash": "59848b28e17ee1b569fa26a30d6909b08dd81d32851a115f23e8208a6ab4b1b4"
+}
