@@ -4,7 +4,6 @@ use adapter::redis::RedisClient;
 use anyhow::Context;
 use anyhow::Result;
 use api::route::{auth, v1};
-use api::route::{book::build_book_routes, health::build_health_check_routes};
 use axum::http::Method;
 use axum::Router;
 use registry::AppRegistry;

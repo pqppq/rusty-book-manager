@@ -10,7 +10,7 @@ use shared::error::{AppError, AppResult};
 use crate::{
     extractor::AuthorizedUser,
     model::{
-        checkout::{CheckoutResponse, CheckoutsResponse},
+        checkout::CheckoutsResponse,
         user::{
             CreateUserRequest, UpdateUserPasswordRequest, UpdateUserPasswordRequestWithUserId,
             UpdateUserRoleRequest, UpdateUserRoleRequestWithUserId, UserResponse, UsersResponse,

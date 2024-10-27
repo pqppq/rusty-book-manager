@@ -1,19 +1,50 @@
+use std::collections::HashMap;
+
 use async_trait::async_trait;
 use derive_new::new;
 use kernel::model::book::event::{DeleteBook, UpdateBook};
-use kernel::model::book::BookListOptions;
 use kernel::model::book::{event::CreateBook, Book};
+use kernel::model::book::{BookListOptions, Checkout};
 use kernel::model::id::{BookId, UserId};
 use kernel::model::list::PaginatedList;
 use kernel::repository::book::BookRepository;
 use shared::error::{AppError, AppResult};
 
-use crate::database::model::book::{BookRow, PaginatedBookRow};
+use crate::database::model::book::{BookCheckoutRow, BookRow, PaginatedBookRow};
 use crate::database::ConnectionPool;
 
 #[derive(new)]
 pub struct BookRepositoryImpl {
     db: ConnectionPool,
+}
+
+impl BookRepositoryImpl {
+    async fn find_checkouts(&self, book_ids: &[BookId]) -> AppResult<HashMap<BookId, Checkout>> {
+        let res = sqlx::query_as!(
+            BookCheckoutRow,
+            r#"
+                SELECT
+                    c.checkout_id,
+                    c.book_id,
+                    c.user_id,
+                    u.name AS user_name,
+                    c.checked_out_at
+                FROM checkouts AS c
+                INNER JOIN users AS u USING(user_id)
+                WHERE book_id = ANY($1)
+                ;
+            "#,
+            book_ids as _
+        )
+        .fetch_all(self.db.inner_ref())
+        .await
+        .map_err(AppError::SpecificOperationError)?
+        .into_iter()
+        .map(|checkout| (checkout.book_id, Checkout::from(checkout)))
+        .collect();
+
+        Ok(res)
+    }
 }
 
 #[async_trait]
@@ -60,6 +91,7 @@ impl BookRepository for BookRepositoryImpl {
 
         let total = rows.first().map(|r| r.total).unwrap_or_default();
         let book_ids = rows.into_iter().map(|r| r.id).collect::<Vec<BookId>>();
+        let mut checkouts = self.find_checkouts(&book_ids).await?;
 
         let rows: Vec<BookRow> = sqlx::query_as!(
             BookRow,
@@ -83,7 +115,14 @@ impl BookRepository for BookRepositoryImpl {
         .await
         .map_err(AppError::SpecificOperationError)?;
 
-        let items = rows.into_iter().map(Book::from).collect();
+        let items = rows
+            .into_iter()
+            .map(|row| {
+                let checkout = checkouts.remove(&row.book_id);
+                row.into_book(checkout)
+            })
+            .collect();
+
         let res = PaginatedList {
             total,
             limit,
@@ -116,9 +155,13 @@ impl BookRepository for BookRepositoryImpl {
         .await
         .map_err(AppError::SpecificOperationError)?;
 
-        let book = row.map(Book::from);
-
-        Ok(book)
+        match row {
+            Some(r) => {
+                let checkout = self.find_checkouts(&[r.book_id]).await?.remove(&r.book_id);
+                Ok(Some(r.into_book(checkout)))
+            }
+            None => Ok(None),
+        }
     }
 
     async fn update(&self, event: UpdateBook) -> AppResult<()> {
@@ -218,6 +261,7 @@ mod tests {
             isbn,
             description,
             owner,
+            ..
         } = res.unwrap();
         assert_eq!(id, book_id);
         assert_eq!(title, "Test Title");

@@ -1,7 +1,8 @@
+use chrono::{DateTime, Utc};
 use kernel::model::{
-    book::Book,
-    id::{BookId, UserId},
-    user::BookOwner,
+    book::{Book, Checkout},
+    id::{BookId, CheckoutId, UserId},
+    user::{BookOwner, CheckoutUser},
 };
 
 pub struct BookRow {
@@ -19,8 +20,16 @@ pub struct PaginatedBookRow {
     pub id: BookId,
 }
 
-impl From<BookRow> for Book {
-    fn from(value: BookRow) -> Self {
+pub struct BookCheckoutRow {
+    pub checkout_id: CheckoutId,
+    pub book_id: BookId,
+    pub user_id: UserId,
+    pub user_name: String,
+    pub checked_out_at: DateTime<Utc>,
+}
+
+impl BookRow {
+    pub fn into_book(self, checkout: Option<Checkout>) -> Book {
         let BookRow {
             book_id,
             title,
@@ -29,20 +38,44 @@ impl From<BookRow> for Book {
             description,
             owned_by,
             owner_name,
-        } = value;
+        } = self;
 
         let owner = BookOwner {
             id: owned_by,
             name: owner_name,
         };
 
-        Self {
+        Book {
             id: book_id,
             title,
             author,
             isbn,
             description,
             owner,
+            checkout,
+        }
+    }
+}
+
+impl From<BookCheckoutRow> for Checkout {
+    fn from(value: BookCheckoutRow) -> Self {
+        let BookCheckoutRow {
+            checkout_id,
+            user_id,
+            user_name,
+            checked_out_at,
+            ..
+        } = value;
+
+        let checked_out_by = CheckoutUser {
+            id: user_id,
+            name: user_name,
+        };
+
+        Checkout {
+            checkout_id,
+            checked_out_by,
+            checked_out_at,
         }
     }
 }
